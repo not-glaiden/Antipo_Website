@@ -30,6 +30,7 @@
       <li><a href="index.html">Главная</a></li>
       <li><a href="news.html">Новости</a></li>
       <li><a href="documents.html">Документы</a></li>
+      <li><a href="directives.html">Директивы</a></li>
       <li><a href="registries.html" class="active">Реестры</a></li>
     </ul>
   </nav>
@@ -58,6 +59,16 @@
     </div>
   </div>
 </footer>
+
+<div class="popup" id="popup">
+  <div class="popup-header">
+    <span class="popup-title">Объявление</span>
+    <button class="popup-close" onclick="closePopup()">×</button>
+  </div>
+  <div class="popup-content">
+    <img src="SLAVA ANTIPO!.gif" alt="SLAVA ANTIPO!">
+  </div>
+</div>
 
 <script>
 function updateDate() {
@@ -88,6 +99,10 @@ function renderRegistries(registries) {
       <div class="registry-desc">${r.description}</div>
     </div>
   `).join('');
+}
+
+function closePopup() {
+  document.getElementById('popup').classList.add('hidden');
 }
 
 updateDate();

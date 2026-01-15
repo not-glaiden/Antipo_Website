@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Документы — АНТИПО</title>
+<title>Директивы — АНТИПО</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -29,8 +29,8 @@
     <ul>
       <li><a href="index.html">Главная</a></li>
       <li><a href="news.html">Новости</a></li>
-      <li><a href="documents.html" class="active">Документы</a></li>
-      <li><a href="directives.html">Директивы</a></li>
+      <li><a href="documents.html">Документы</a></li>
+      <li><a href="directives.html" class="active">Директивы</a></li>
       <li><a href="registries.html">Реестры</a></li>
     </ul>
   </nav>
@@ -39,10 +39,10 @@
 <main class="single-column">
   <section>
     <div class="section-header">
-      <div class="section-title">Документы</div>
-      <div class="section-meta">Действующие нормативные акты</div>
+      <div class="section-title">Директивы</div>
+      <div class="section-meta">Обязательные к исполнению распоряжения</div>
     </div>
-    <div class="section-content" id="docs">
+    <div class="section-content" id="directives">
       <div style="color: var(--text-muted);">Загрузка...</div>
     </div>
   </section>
@@ -77,24 +77,24 @@ function updateDate() {
   document.getElementById('current-date').textContent = now.toLocaleDateString('ru-RU', options);
 }
 
-async function loadDocs() {
+async function loadDirectives() {
   try {
-    const res = await fetch('documents.json');
-    const docs = await res.json();
-    renderDocs(docs);
+    const res = await fetch('directives.json');
+    const directives = await res.json();
+    renderDirectives(directives);
   } catch (e) {
     console.error('Ошибка загрузки:', e);
   }
 }
 
-function renderDocs(docs) {
-  const container = document.getElementById('docs');
-  container.innerHTML = docs.map(d => `
+function renderDirectives(directives) {
+  const container = document.getElementById('directives');
+  container.innerHTML = directives.map(d => `
     <div class="doc-item">
       <div class="doc-header">
         <div class="doc-info">
           <div class="doc-title">${d.title}</div>
-          <div class="doc-meta">№ ${d.id} · ${d.date} · Статус: действует</div>
+          <div class="doc-meta">№ ${d.id} · ${d.date} · Статус: ${d.status === 'active' ? 'действует' : 'утратила силу'}</div>
           <div class="doc-summary">${d.summary}</div>
         </div>
         ${d.file ? `<a href="${d.file}" class="doc-download" download>Скачать</a>` : ''}
@@ -108,7 +108,7 @@ function closePopup() {
 }
 
 updateDate();
-loadDocs();
+loadDirectives();
 </script>
 
 </body>

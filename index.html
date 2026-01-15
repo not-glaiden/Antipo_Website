@@ -53,7 +53,7 @@
       <div class="section-header">
         <div class="section-title">Директивы</div>
       </div>
-      <div class="section-content" id="docs">
+      <div class="section-content" id="directives">
         <div style="color: var(--text-muted);">Загрузка...</div>
       </div>
     </section>
@@ -77,6 +77,16 @@
   </div>
 </footer>
 
+<div class="popup" id="popup">
+  <div class="popup-header">
+    <span class="popup-title">Объявление</span>
+    <button class="popup-close" onclick="closePopup()">×</button>
+  </div>
+  <div class="popup-content">
+    <img src="SLAVA ANTIPO!.gif" alt="SLAVA ANTIPO!">
+  </div>
+</div>
+
 <script>
 function updateDate() {
   const now = new Date();
@@ -86,16 +96,16 @@ function updateDate() {
 
 async function loadData() {
   try {
-    const [newsRes, docsRes] = await Promise.all([
+    const [newsRes, directivesRes] = await Promise.all([
       fetch('news.json'),
-      fetch('documents.json')
+      fetch('directives.json')
     ]);
     
     const news = await newsRes.json();
-    const docs = await docsRes.json();
+    const directives = await directivesRes.json();
     
     renderNews(news.slice(0, 5));
-    renderDocs(docs.slice(0, 4));
+    renderDirectives(directives.slice(0, 4));
   } catch (e) {
     console.error('Ошибка загрузки:', e);
   }
@@ -116,15 +126,19 @@ function renderNews(news) {
   `).join('');
 }
 
-function renderDocs(docs) {
-  const container = document.getElementById('docs');
-  container.innerHTML = docs.map(d => `
+function renderDirectives(directives) {
+  const container = document.getElementById('directives');
+  container.innerHTML = directives.map(d => `
     <div class="doc-item">
       <div class="doc-title">${d.title}</div>
       <div class="doc-meta">№ ${d.id} · ${d.date}</div>
       ${d.file ? `<a href="${d.file}" class="doc-download" download>Скачать</a>` : ''}
     </div>
   `).join('');
+}
+
+function closePopup() {
+  document.getElementById('popup').classList.add('hidden');
 }
 
 updateDate();

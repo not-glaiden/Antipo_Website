@@ -30,21 +30,22 @@
       <li><a href="index.html">Главная</a></li>
       <li><a href="news.html" class="active">Новости</a></li>
       <li><a href="documents.html">Документы</a></li>
+      <li><a href="directives.html">Директивы</a></li>
       <li><a href="registries.html">Реестры</a></li>
     </ul>
   </nav>
 </header>
 
 <main class="single-column">
-  <section>
-    <div class="section-header">
-      <div class="section-title">Новости</div>
-      <div class="section-meta">Все публикации</div>
-    </div>
-    <div class="section-content" id="news">
-      <div style="color: var(--text-muted);">Загрузка...</div>
-    </div>
-  </section>
+    <section>
+      <div class="section-header">
+        <div class="section-title">Новости</div>
+        <div class="section-meta">Все публикации</div>
+      </div>
+      <div class="section-content" id="news">
+        <div style="color: var(--text-muted);">Загрузка...</div>
+      </div>
+    </section>
 </main>
 
 <footer>
@@ -58,6 +59,16 @@
     </div>
   </div>
 </footer>
+
+<div class="popup" id="popup">
+  <div class="popup-header">
+    <span class="popup-title">Объявление</span>
+    <button class="popup-close" onclick="closePopup()">×</button>
+  </div>
+  <div class="popup-content">
+    <img src="SLAVA ANTIPO!.gif" alt="SLAVA ANTIPO!">
+  </div>
+</div>
 
 <script>
 function updateDate() {
@@ -89,6 +100,10 @@ function renderNews(news) {
       <div class="news-text">${n.text}</div>
     </div>
   `).join('');
+}
+
+function closePopup() {
+  document.getElementById('popup').classList.add('hidden');
 }
 
 updateDate();
