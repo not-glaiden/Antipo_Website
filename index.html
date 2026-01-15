@@ -1,60 +1,199 @@
-<!DOCTYPE html>
+from pathlib import Path
+import zipfile
+
+base = Path("/mnt/data/antipo_site_dystopian")
+base.mkdir(exist_ok=True)
+
+index_html = """<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Антипо — Портал стабильности</title>
+<title>Антипо — Центральный информационный узел</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body { margin:0; font-family:Inter,Arial,sans-serif; background:#0e0e11; color:#e6e6eb; }
-header { background:#15151c; padding:16px; border-bottom:1px solid #2a2a35; }
-h1 { margin:0; font-size:22px; letter-spacing:1px; }
-.status { font-size:13px; color:#9aa0b4; }
-main { display:grid; grid-template-columns:1fr 1fr; gap:20px; padding:20px; }
-section { background:#15151c; border:1px solid #2a2a35; padding:16px; }
-section h2 { margin-top:0; font-size:16px; border-bottom:1px solid #2a2a35; padding-bottom:6px; }
-.item { margin-bottom:12px; }
-.item-title { font-weight:600; }
-.item-meta { font-size:12px; color:#9aa0b4; }
-.item-text { font-size:14px; margin-top:4px; }
-footer { text-align:center; padding:12px; font-size:12px; color:#666; }
-.badge { display:inline-block; padding:2px 6px; background:#2a2a35; font-size:11px; margin-left:6px; }
+:root {
+  --bg: #0b0d10;
+  --panel: #12151a;
+  --border: #242833;
+  --text: #d8dbe3;
+  --muted: #8b90a3;
+  --accent: #b91c1c;
+  --ok: #4ade80;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Mono", Consolas, monospace;
+  background: radial-gradient(circle at top, #10141b, var(--bg));
+  color: var(--text);
+}
+
+header {
+  background: linear-gradient(180deg, #141821, #0f1218);
+  border-bottom: 1px solid var(--border);
+  padding: 18px 24px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: 2px;
+}
+
+.sub {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.status-line {
+  margin-top: 10px;
+  padding: 6px 10px;
+  display: inline-block;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: #0c0f15;
+}
+
+.status-ok { color: var(--ok); }
+.status-warn { color: #facc15; }
+.status-alert { color: var(--accent); }
+
+main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding: 24px;
+}
+
+section {
+  background: linear-gradient(180deg, #141821, var(--panel));
+  border: 1px solid var(--border);
+  padding: 18px;
+}
+
+section h2 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 6px;
+}
+
+.item {
+  padding: 10px 0;
+  border-bottom: 1px dashed #232734;
+}
+
+.item:last-child { border-bottom: none; }
+
+.item-title {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.item-meta {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.item-text {
+  font-size: 13px;
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.badge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  font-size: 10px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+
+footer {
+  border-top: 1px solid var(--border);
+  background: #0c0f15;
+  padding: 14px;
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+}
+
+footer span {
+  color: var(--accent);
+}
 </style>
 </head>
+
 <body>
+
 <header>
-<h1>АНТИПО</h1>
-<div class="status">Портал стратегической стабильности · Статус мира: <b>Контролируемый</b></div>
+  <h1>АНТИПО</h1>
+  <div class="sub">Центральный информационный узел · Версия протокола 3.1</div>
+  <div class="status-line">
+    Статус мира:
+    <span class="status-ok">СТАБИЛЬНЫЙ</span>
+  </div>
 </header>
+
 <main>
-<section>
-<h2>Официальные новости</h2>
-<div id="news">Загрузка…</div>
-</section>
-<section>
-<h2>Документы и директивы</h2>
-<div id="docs">Загрузка…</div>
-</section>
+  <section>
+    <h2>Оперативные сводки</h2>
+    <div id="news">Синхронизация…</div>
+  </section>
+
+  <section>
+    <h2>Нормативные документы</h2>
+    <div id="docs">Синхронизация…</div>
+  </section>
 </main>
-<footer>Антипо не комментирует альтернативные источники информации</footer>
+
+<footer>
+  Антипо действует в интересах стабильности · <span>Альтернативные интерпретации не учитываются</span>
+</footer>
+
 <script>
-async function loadData(){
-const news=await fetch('news.json').then(r=>r.json());
-const docs=await fetch('documents.json').then(r=>r.json());
-document.getElementById('news').innerHTML=news.map(n=>`
-<div class="item">
-<div class="item-title">${n.title}${n.important?'<span class="badge">Важно</span>':''}</div>
-<div class="item-meta">${n.date}</div>
-<div class="item-text">${n.text}</div>
-</div>`).join('');
-document.getElementById('docs').innerHTML=docs.map(d=>`
-<div class="item">
-<div class="item-title">${d.title}</div>
-<div class="item-meta">№${d.id} · ${d.date}</div>
-<div class="item-text">${d.summary}</div>
-</div>`).join('');
+async function loadData() {
+  const news = await fetch('news.json').then(r => r.json());
+  const docs = await fetch('documents.json').then(r => r.json());
+
+  document.getElementById('news').innerHTML = news.map(n => `
+    <div class="item">
+      <div class="item-title">${n.title}
+        ${n.important ? '<span class="badge">ПРИОРИТЕТ</span>' : ''}
+      </div>
+      <div class="item-meta">${n.date}</div>
+      <div class="item-text">${n.text}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('docs').innerHTML = docs.map(d => `
+    <div class="item">
+      <div class="item-title">${d.title}</div>
+      <div class="item-meta">ДОК №${d.id} · ${d.date}</div>
+      <div class="item-text">${d.summary}</div>
+    </div>
+  `).join('');
 }
+
 loadData();
-setInterval(loadData,10000);
+setInterval(loadData, 10000);
 </script>
+
 </body>
 </html>
+"""
+
+(base / "index.html").write_text(index_html, encoding="utf-8")
+
+zip_path = "/mnt/data/antipo_site_dystopian_style.zip"
+with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
+    z.write(base / "index.html", "index.html")
+
+zip_path
