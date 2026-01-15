@@ -1,132 +1,397 @@
-from pathlib import Path
-import zipfile
-
-base = Path("/mnt/data/antipo_site_dystopian")
-base.mkdir(exist_ok=True)
-
-index_html = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>Антипо — Центральный информационный узел</title>
+<title>АНТИПО — Официальный портал</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0b0d10;
-  --panel: #12151a;
-  --border: #242833;
-  --text: #d8dbe3;
-  --muted: #8b90a3;
-  --accent: #b91c1c;
-  --ok: #4ade80;
+  --bg-primary: #f0f2f5;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #f7f8fa;
+  --border: #d4d8e0;
+  --border-accent: #c0c6d0;
+  --text-primary: #1a2744;
+  --text-secondary: #4a5568;
+  --text-muted: #8494a7;
+  --accent: #1e3a5f;
+  --accent-dim: #152a47;
 }
 
-* { box-sizing: border-box; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 body {
-  margin: 0;
-  font-family: "IBM Plex Mono", Consolas, monospace;
-  background: radial-gradient(circle at top, #10141b, var(--bg));
-  color: var(--text);
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-size: 13px;
+  line-height: 1.6;
+  min-height: 100vh;
 }
 
+/* ===== ШАПКА ===== */
 header {
-  background: linear-gradient(180deg, #141821, #0f1218);
+  background: var(--accent);
+  border-bottom: 3px solid var(--accent-dim);
+}
+
+.header-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo-block {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+}
+
+.title-block h1 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 6px;
+  color: #ffffff;
+}
+
+.title-block .subtitle {
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 1px;
+}
+
+.header-date {
+  text-align: right;
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+}
+
+.header-date .date {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+/* ===== НАВИГАЦИЯ ===== */
+nav {
+  background: var(--accent-dim);
   border-bottom: 1px solid var(--border);
-  padding: 18px 24px;
 }
 
-h1 {
-  margin: 0;
-  font-size: 20px;
-  letter-spacing: 2px;
+nav ul {
+  display: flex;
+  list-style: none;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.sub {
-  margin-top: 6px;
-  font-size: 12px;
-  color: var(--muted);
-}
-
-.status-line {
-  margin-top: 10px;
-  padding: 6px 10px;
-  display: inline-block;
-  font-size: 12px;
-  border: 1px solid var(--border);
-  background: #0c0f15;
-}
-
-.status-ok { color: var(--ok); }
-.status-warn { color: #facc15; }
-.status-alert { color: var(--accent); }
-
-main {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  padding: 24px;
-}
-
-section {
-  background: linear-gradient(180deg, #141821, var(--panel));
-  border: 1px solid var(--border);
-  padding: 18px;
-}
-
-section h2 {
-  margin: 0 0 12px 0;
-  font-size: 14px;
+nav a {
+  display: block;
+  padding: 12px 20px;
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 11px;
   letter-spacing: 1px;
   text-transform: uppercase;
+  border-right: 1px solid rgba(255,255,255,0.1);
+  transition: background 0.2s, color 0.2s;
+}
+
+nav a:hover {
+  background: rgba(255,255,255,0.1);
+  color: #ffffff;
+}
+
+nav li:first-child a {
+  border-left: 1px solid rgba(255,255,255,0.1);
+}
+
+/* ===== ОСНОВНОЙ КОНТЕНТ ===== */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+/* ===== СЕКЦИИ ===== */
+section {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: var(--bg-tertiary);
   border-bottom: 1px solid var(--border);
-  padding-bottom: 6px;
 }
 
-.item {
-  padding: 10px 0;
-  border-bottom: 1px dashed #232734;
-}
-
-.item:last-child { border-bottom: none; }
-
-.item-title {
+.section-title {
+  font-family: 'Oswald', sans-serif;
   font-size: 13px;
   font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
 }
 
-.item-meta {
-  font-size: 11px;
-  color: var(--muted);
+.section-meta {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.section-content {
+  padding: 16px 18px;
+}
+
+/* ===== НОВОСТИ ===== */
+.news-item {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.news-item:last-child {
+  border-bottom: none;
+}
+
+.news-item:first-child {
+  padding-top: 0;
+}
+
+.news-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.news-marker {
+  width: 3px;
+  min-height: 18px;
+  background: var(--border);
+  flex-shrink: 0;
   margin-top: 2px;
 }
 
-.item-text {
-  font-size: 13px;
-  margin-top: 6px;
-  line-height: 1.5;
+.news-marker.priority {
+  background: var(--accent);
 }
 
-.badge {
-  display: inline-block;
-  margin-left: 6px;
-  padding: 1px 6px;
-  font-size: 10px;
-  border: 1px solid var(--accent);
-  color: var(--accent);
+.news-title {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-primary);
+  flex: 1;
 }
 
-footer {
-  border-top: 1px solid var(--border);
-  background: #0c0f15;
-  padding: 14px;
+.news-badge {
+  background: var(--accent);
+  color: #ffffff;
+  font-size: 9px;
+  padding: 3px 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+.news-date {
   font-size: 11px;
-  color: var(--muted);
-  text-align: center;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  margin-left: 15px;
 }
 
-footer span {
-  color: var(--accent);
+.news-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-left: 15px;
+  line-height: 1.7;
+}
+
+/* ===== ДОКУМЕНТЫ ===== */
+.doc-item {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.doc-item:last-child {
+  border-bottom: none;
+}
+
+.doc-item:first-child {
+  padding-top: 0;
+}
+
+.doc-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.doc-meta {
+  font-size: 10px;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.doc-summary {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* ===== БОКОВАЯ ПАНЕЛЬ ===== */
+.sidebar-section {
+  margin-bottom: 24px;
+}
+
+.sidebar-section:last-child {
+  margin-bottom: 0;
+}
+
+.info-block {
+  padding: 14px;
+  background: #e8edf4;
+  border-left: 3px solid var(--accent);
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+.info-block strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.links-list {
+  list-style: none;
+}
+
+.links-list li {
+  border-bottom: 1px solid var(--border);
+}
+
+.links-list li:last-child {
+  border-bottom: none;
+}
+
+.links-list a {
+  display: block;
+  padding: 10px 14px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 11px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.links-list a:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.links-list .arrow {
+  float: right;
+  color: var(--text-muted);
+}
+
+/* ===== FOOTER ===== */
+footer {
+  background: var(--accent);
+  border-top: none;
+  padding: 20px 24px;
+  margin-top: 24px;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+.footer-main {
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.8;
+}
+
+.footer-main strong {
+  color: #ffffff;
+}
+
+.footer-note {
+  font-size: 10px;
+  color: rgba(255,255,255,0.6);
+  text-align: right;
+  max-width: 300px;
+}
+
+/* ===== СКРОЛЛБАР ===== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+}
+
+/* ===== АДАПТИВНОСТЬ ===== */
+@media (max-width: 800px) {
+  main {
+    grid-template-columns: 1fr;
+  }
+  
+  .header-main {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+  
+  .header-date {
+    text-align: center;
+  }
+  
+  nav ul {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .footer-content {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .footer-note {
+    text-align: left;
+    max-width: none;
+  }
 }
 </style>
 </head>
@@ -134,66 +399,141 @@ footer span {
 <body>
 
 <header>
-  <h1>АНТИПО</h1>
-  <div class="sub">Центральный информационный узел · Версия протокола 3.1</div>
-  <div class="status-line">
-    Статус мира:
-    <span class="status-ok">СТАБИЛЬНЫЙ</span>
+  <div class="header-main">
+    <div class="logo-block">
+      <img src="logo.png" alt="АНТИПО" class="logo">
+      <div class="title-block">
+        <h1>АНТИПО</h1>
+        <div class="subtitle">Официальный информационный портал</div>
+      </div>
+    </div>
+    <div class="header-date">
+      <div class="date" id="current-date">—</div>
+    </div>
   </div>
+  
+  <nav>
+    <ul>
+      <li><a href="#">Главная</a></li>
+      <li><a href="#">Документы</a></li>
+      <li><a href="#">Реестры</a></li>
+      <li><a href="#">Обращения</a></li>
+      <li><a href="#">Контакты</a></li>
+    </ul>
+  </nav>
 </header>
 
 <main>
-  <section>
-    <h2>Оперативные сводки</h2>
-    <div id="news">Синхронизация…</div>
-  </section>
-
-  <section>
-    <h2>Нормативные документы</h2>
-    <div id="docs">Синхронизация…</div>
-  </section>
+  <div class="content-main">
+    <section>
+      <div class="section-header">
+        <div class="section-title">Новости</div>
+        <div class="section-meta" id="news-update"></div>
+      </div>
+      <div class="section-content" id="news">
+        <div style="color: var(--text-muted);">Загрузка...</div>
+      </div>
+    </section>
+  </div>
+  
+  <div class="content-sidebar">
+    <section class="sidebar-section">
+      <div class="section-header">
+        <div class="section-title">Директивы</div>
+      </div>
+      <div class="section-content" id="docs">
+        <div style="color: var(--text-muted);">Загрузка...</div>
+      </div>
+    </section>
+    
+    <section class="sidebar-section">
+      <div class="section-header">
+        <div class="section-title">Разделы</div>
+      </div>
+      <ul class="links-list">
+        <li><a href="#">Реестр действующих директив <span class="arrow">→</span></a></li>
+        <li><a href="#">Архив распоряжений <span class="arrow">→</span></a></li>
+        <li><a href="#">Порядок обращений <span class="arrow">→</span></a></li>
+        <li><a href="#">Территориальные органы <span class="arrow">→</span></a></li>
+      </ul>
+    </section>
+    
+    <div class="info-block">
+      <strong>Уведомление</strong><br>
+      Данный портал является единственным официальным источником информации. Сведения из иных источников не рассматриваются.
+    </div>
+  </div>
 </main>
 
 <footer>
-  Антипо действует в интересах стабильности · <span>Альтернативные интерпретации не учитываются</span>
+  <div class="footer-content">
+    <div class="footer-main">
+      <strong>АНТИПО</strong> · Официальный информационный портал<br>
+      Все материалы подлежат обязательному ознакомлению
+    </div>
+    <div class="footer-note">
+      Распространение материалов допускается исключительно со ссылкой на официальный источник
+    </div>
+  </div>
 </footer>
 
 <script>
+// Дата
+function updateDate() {
+  const now = new Date();
+  const options = { day: 'numeric', month: 'long', year: 'numeric' };
+  document.getElementById('current-date').textContent = now.toLocaleDateString('ru-RU', options);
+}
+
+// Загрузка данных
 async function loadData() {
-  const news = await fetch('news.json').then(r => r.json());
-  const docs = await fetch('documents.json').then(r => r.json());
+  try {
+    const [newsRes, docsRes] = await Promise.all([
+      fetch('news.json'),
+      fetch('documents.json')
+    ]);
+    
+    const news = await newsRes.json();
+    const docs = await docsRes.json();
+    
+    renderNews(news);
+    renderDocs(docs);
+  } catch (e) {
+    console.error('Ошибка загрузки:', e);
+  }
+}
 
-  document.getElementById('news').innerHTML = news.map(n => `
-    <div class="item">
-      <div class="item-title">${n.title}
-        ${n.important ? '<span class="badge">ПРИОРИТЕТ</span>' : ''}
+function renderNews(news) {
+  const container = document.getElementById('news');
+  container.innerHTML = news.map(n => `
+    <div class="news-item">
+      <div class="news-header">
+        <div class="news-marker ${n.important ? 'priority' : ''}"></div>
+        <div class="news-title">${n.title}</div>
+        ${n.important ? '<div class="news-badge">Важно</div>' : ''}
       </div>
-      <div class="item-meta">${n.date}</div>
-      <div class="item-text">${n.text}</div>
-    </div>
-  `).join('');
-
-  document.getElementById('docs').innerHTML = docs.map(d => `
-    <div class="item">
-      <div class="item-title">${d.title}</div>
-      <div class="item-meta">ДОК №${d.id} · ${d.date}</div>
-      <div class="item-text">${d.summary}</div>
+      <div class="news-date">${n.date}</div>
+      <div class="news-text">${n.text}</div>
     </div>
   `).join('');
 }
 
+function renderDocs(docs) {
+  const container = document.getElementById('docs');
+  container.innerHTML = docs.map(d => `
+    <div class="doc-item">
+      <div class="doc-title">${d.title}</div>
+      <div class="doc-meta">№ ${d.id} · ${d.date}</div>
+      <div class="doc-summary">${d.summary}</div>
+    </div>
+  `).join('');
+}
+
+// Инициализация
+updateDate();
 loadData();
 setInterval(loadData, 10000);
 </script>
 
 </body>
 </html>
-"""
-
-(base / "index.html").write_text(index_html, encoding="utf-8")
-
-zip_path = "/mnt/data/antipo_site_dystopian_style.zip"
-with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
-    z.write(base / "index.html", "index.html")
-
-zip_path
