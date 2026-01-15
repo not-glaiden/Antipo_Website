@@ -80,9 +80,14 @@ function renderDocs(docs) {
   const container = document.getElementById('docs');
   container.innerHTML = docs.map(d => `
     <div class="doc-item">
-      <div class="doc-title">${d.title}</div>
-      <div class="doc-meta">№ ${d.id} · ${d.date} · Статус: действует</div>
-      <div class="doc-summary">${d.summary}</div>
+      <div class="doc-header">
+        <div class="doc-info">
+          <div class="doc-title">${d.title}</div>
+          <div class="doc-meta">№ ${d.id} · ${d.date} · Статус: действует</div>
+          <div class="doc-summary">${d.summary}</div>
+        </div>
+        ${d.file ? `<a href="${d.file}" class="doc-download" download>Скачать</a>` : ''}
+      </div>
     </div>
   `).join('');
 }

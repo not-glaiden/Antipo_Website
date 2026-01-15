@@ -241,6 +241,17 @@ section {
   padding-top: 0;
 }
 
+.doc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.doc-info {
+  flex: 1;
+}
+
 .doc-title {
   font-size: 12px;
   font-weight: 600;
@@ -258,6 +269,29 @@ section {
   font-size: 11px;
   color: var(--text-secondary);
   line-height: 1.6;
+}
+
+.doc-download {
+  display: inline-block;
+  padding: 6px 12px;
+  background: var(--accent);
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.doc-download:hover {
+  background: var(--accent-dim);
+}
+
+.doc-no-file {
+  font-size: 10px;
+  color: var(--text-muted);
+  padding: 6px 0;
 }
 
 /* ===== РЕЕСТРЫ ===== */
