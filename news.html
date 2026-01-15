@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<title>АНТИПО — Официальный портал</title>
+<title>Новости — АНТИПО</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -27,41 +27,24 @@
   
   <nav>
     <ul>
-      <li><a href="index.html" class="active">Главная</a></li>
-      <li><a href="news.html">Новости</a></li>
+      <li><a href="index.html">Главная</a></li>
+      <li><a href="news.html" class="active">Новости</a></li>
       <li><a href="documents.html">Документы</a></li>
       <li><a href="registries.html">Реестры</a></li>
     </ul>
   </nav>
 </header>
 
-<main class="two-columns">
-  <div class="content-main">
-    <section>
-      <div class="section-header">
-        <div class="section-title">Новости</div>
-      </div>
-      <div class="section-content" id="news">
-        <div style="color: var(--text-muted);">Загрузка...</div>
-      </div>
-    </section>
-  </div>
-  
-  <div class="content-sidebar">
-    <section class="sidebar-section">
-      <div class="section-header">
-        <div class="section-title">Директивы</div>
-      </div>
-      <div class="section-content" id="docs">
-        <div style="color: var(--text-muted);">Загрузка...</div>
-      </div>
-    </section>
-    
-    <div class="info-block">
-      <strong>Уведомление</strong><br>
-      Данный портал является единственным официальным источником информации. Сведения из иных источников не рассматриваются.
+<main class="single-column">
+  <section>
+    <div class="section-header">
+      <div class="section-title">Новости</div>
+      <div class="section-meta">Все публикации</div>
     </div>
-  </div>
+    <div class="section-content" id="news">
+      <div style="color: var(--text-muted);">Загрузка...</div>
+    </div>
+  </section>
 </main>
 
 <footer>
@@ -83,18 +66,11 @@ function updateDate() {
   document.getElementById('current-date').textContent = now.toLocaleDateString('ru-RU', options);
 }
 
-async function loadData() {
+async function loadNews() {
   try {
-    const [newsRes, docsRes] = await Promise.all([
-      fetch('news.json'),
-      fetch('documents.json')
-    ]);
-    
-    const news = await newsRes.json();
-    const docs = await docsRes.json();
-    
-    renderNews(news.slice(0, 5));
-    renderDocs(docs.slice(0, 4));
+    const res = await fetch('news.json');
+    const news = await res.json();
+    renderNews(news);
   } catch (e) {
     console.error('Ошибка загрузки:', e);
   }
@@ -115,19 +91,8 @@ function renderNews(news) {
   `).join('');
 }
 
-function renderDocs(docs) {
-  const container = document.getElementById('docs');
-  container.innerHTML = docs.map(d => `
-    <div class="doc-item">
-      <div class="doc-title">${d.title}</div>
-      <div class="doc-meta">№ ${d.id} · ${d.date}</div>
-      <div class="doc-summary">${d.summary}</div>
-    </div>
-  `).join('');
-}
-
 updateDate();
-loadData();
+loadNews();
 </script>
 
 </body>

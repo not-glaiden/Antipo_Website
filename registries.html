@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Реестры — АНТИПО</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<header>
+  <div class="header-main">
+    <div class="logo-block">
+      <img src="logo.png" alt="АНТИПО" class="logo">
+      <div class="title-block">
+        <h1>АНТИПО</h1>
+        <div class="subtitle">Официальный информационный портал</div>
+      </div>
+    </div>
+    <div class="header-date">
+      <div class="date" id="current-date">—</div>
+    </div>
+  </div>
+  
+  <nav>
+    <ul>
+      <li><a href="index.html">Главная</a></li>
+      <li><a href="news.html">Новости</a></li>
+      <li><a href="documents.html">Документы</a></li>
+      <li><a href="registries.html" class="active">Реестры</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="single-column">
+  <section>
+    <div class="section-header">
+      <div class="section-title">Реестры</div>
+      <div class="section-meta">Официальные перечни и учётные системы</div>
+    </div>
+    <div class="section-content" id="registries">
+      <div style="color: var(--text-muted);">Загрузка...</div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-content">
+    <div class="footer-main">
+      <strong>АНТИПО</strong> · Официальный информационный портал<br>
+      Все материалы подлежат обязательному ознакомлению
+    </div>
+    <div class="footer-note">
+      Распространение материалов допускается исключительно со ссылкой на официальный источник
+    </div>
+  </div>
+</footer>
+
+<script>
+function updateDate() {
+  const now = new Date();
+  const options = { day: 'numeric', month: 'long', year: 'numeric' };
+  document.getElementById('current-date').textContent = now.toLocaleDateString('ru-RU', options);
+}
+
+async function loadRegistries() {
+  try {
+    const res = await fetch('registries.json');
+    const registries = await res.json();
+    renderRegistries(registries);
+  } catch (e) {
+    console.error('Ошибка загрузки:', e);
+  }
+}
+
+function renderRegistries(registries) {
+  const container = document.getElementById('registries');
+  container.innerHTML = registries.map(r => `
+    <div class="registry-item">
+      <div class="registry-title">
+        ${r.title}
+        <span class="registry-status ${r.status}">${r.status === 'active' ? 'Ведётся' : 'Закрыт'}</span>
+      </div>
+      <div class="registry-meta">Код: ${r.code} · Обновлено: ${r.updated}</div>
+      <div class="registry-desc">${r.description}</div>
+    </div>
+  `).join('');
+}
+
+updateDate();
+loadRegistries();
+</script>
+
+</body>
+</html>
