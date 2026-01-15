@@ -80,7 +80,7 @@
 <div class="popup" id="popup">
   <div class="popup-header">
     <span class="popup-title">Объявление</span>
-    <button class="popup-close" onclick="closePopup()">×</button>
+    <button class="popup-close" id="popup-close" type="button">×</button>
   </div>
   <div class="popup-content">
     <img src="SLAVA ANTIPO!.gif" alt="SLAVA ANTIPO!">
@@ -137,9 +137,9 @@ function renderDirectives(directives) {
   `).join('');
 }
 
-function closePopup() {
+document.getElementById('popup-close').addEventListener('click', function() {
   document.getElementById('popup').classList.add('hidden');
-}
+});
 
 updateDate();
 loadData();
